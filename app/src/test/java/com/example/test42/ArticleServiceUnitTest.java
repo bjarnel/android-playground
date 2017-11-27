@@ -33,7 +33,7 @@ public class ArticleServiceUnitTest {
 
         final CountDownLatch signal = new CountDownLatch(1);
 
-        ArticleService service = ApiUtils.getArticleService();
+        ArticleService service = ApiUtils.INSTANCE.getArticleService();
         Call<List<Article>> request = service.getArticles("6",
                                                           "2",  // seneste nyt
                                                           "nyhedscenter",

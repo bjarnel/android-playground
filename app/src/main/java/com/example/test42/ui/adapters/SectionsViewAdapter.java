@@ -78,7 +78,7 @@ public class SectionsViewAdapter extends RecyclerView.Adapter<SectionsViewAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         Section section = sections.get(position);
         holder.titleTextView.setText(section.getTitle());
-        //holder.typeTextView.setText(section.getType().name());
+        //holder.titleTextView.setText(section.getKey_not_present());
 
         List<Article> articles = articleSets.get(section.getId());
         if(articles == null) {

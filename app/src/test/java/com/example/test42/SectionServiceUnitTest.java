@@ -35,7 +35,7 @@ public class SectionServiceUnitTest {
         final CountDownLatch signal = new CountDownLatch(1);
 
 
-        SectionService service = ApiUtils.getSectionService();
+        SectionService service = ApiUtils.INSTANCE.getSectionService();
         service.getSections("nyhedscenter",
                             "6").enqueue(new Callback<List<Section>>() {
             @Override
