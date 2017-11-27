@@ -16,6 +16,7 @@ import com.example.test42.data.remote.ApiUtils
 import com.example.test42.data.remote.ArticleService
 import com.example.test42.data.remote.SectionService
 import com.example.test42.ui.adapters.SectionsViewAdapter
+import kotlinx.android.synthetic.main.fragment_news.view.*
 
 import java.util.ArrayList
 
@@ -28,9 +29,8 @@ import retrofit2.Response
  */
 
 class NewsFragment : Fragment() {
-    private var sectionsRecyclerView: RecyclerView? = null
-    private var sectionsViewAdapter: SectionsViewAdapter? = null
-    private var sections: MutableList<Section>? = null
+    // lateinit is similar to implicit unwrapped in Swift
+    private var sections: MutableList<Section> = ArrayList()
     private var sectionsRequest: Call<List<Section>>? = null
 
     // the Kotlin converter made savedInstanceState a non-null param, but actually it is nullable
@@ -43,16 +43,14 @@ class NewsFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_news, container, false)
 
-        // we have zero sections to  begin with
-        sections = ArrayList()
-
-        sectionsRecyclerView = view.findViewById(R.id.sectionsRecyclerView)
-        sectionsViewAdapter = SectionsViewAdapter(activity.applicationContext, sections)
+        // No need for this findViewById anymore with Kotlin:-)
+        //sectionsRecyclerView = view.findViewById(R.id.sectionsRecyclerView)
 
         val layoutManager = LinearLayoutManager(activity.applicationContext)
-        sectionsRecyclerView!!.layoutManager = layoutManager
-        sectionsRecyclerView!!.itemAnimator = DefaultItemAnimator()
-        sectionsRecyclerView!!.adapter = sectionsViewAdapter
+        // we can reference with child with by its id directly with Kotlin
+        view.sectionsRecyclerView.layoutManager = layoutManager
+        view.sectionsRecyclerView.itemAnimator = DefaultItemAnimator()
+        view.sectionsRecyclerView.adapter = SectionsViewAdapter(activity.applicationContext, sections)
 
         loadSections()
 
@@ -61,19 +59,21 @@ class NewsFragment : Fragment() {
 
     private fun loadSections() {
         // abort current (if any) request
-        if (sectionsRequest != null && !sectionsRequest!!.isExecuted) {
-            sectionsRequest!!.cancel()
+        // is this right?
+        sectionsRequest?.let {
+            it.cancel()
             sectionsRequest = null
         }
 
-        val service = ApiUtils.sectionService
-        sectionsRequest = service.getSections("nyhedscenter", "6")
-        sectionsRequest!!.enqueue(object : Callback<List<Section>> {
+        val request = ApiUtils.sectionService
+                              .getSections("nyhedscenter", "6")
+        request.enqueue(object : Callback<List<Section>> {
             override fun onResponse(call: Call<List<Section>>, response: Response<List<Section>>) {
                 if (response.isSuccessful) {
-                    sections!!.clear()
-                    sections!!.addAll(response.body())
-                    sectionsViewAdapter!!.notifyDataSetChanged()
+                    sections.clear()
+                    sections.addAll(response.body())
+                    view.sectionsRecyclerView.adapter.notifyDataSetChanged()
+
                     loadArticles()
 
                 } else {
@@ -85,6 +85,8 @@ class NewsFragment : Fragment() {
                 //TODO: handle
             }
         })
+
+        sectionsRequest = request
 
     }
 
@@ -101,7 +103,8 @@ class NewsFragment : Fragment() {
             request.enqueue(object : Callback<List<Article>> {
                 override fun onResponse(call: Call<List<Article>>, response: Response<List<Article>>) {
                     if (response.isSuccessful) {
-                        sectionsViewAdapter!!.updateArticleSet(response.body(), section)
+                        // haha this is basically Swift code..
+                        (view.sectionsRecyclerView.adapter as? SectionsViewAdapter)?.updateArticleSet(response.body(), section)
 
                     } else {
                         //TODO: handle
