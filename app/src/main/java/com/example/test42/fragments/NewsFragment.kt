@@ -65,6 +65,8 @@ class NewsFragment : Fragment() {
             sectionsRequest = null
         }
 
+        //TODO: use synchronous Retrofit call with Kotlin coroutines...(!!)
+        //TODO: use Dagger to auto inject sectionService / articleService into this fragment...(!!)
         val request = ApiUtils.sectionService
                               .getSections("nyhedscenter", "6")
         request.enqueue(object : Callback<List<Section>> {
@@ -94,7 +96,7 @@ class NewsFragment : Fragment() {
         val service = ApiUtils.articleService
 
         // we will simply, because we're rather stupid at this point, load articles for ALL sections
-        for (section in sections!!) {
+        for (section in sections) {
             val request = service.getArticles(
                     "6",
                     section.id,
