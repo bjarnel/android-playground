@@ -2,6 +2,7 @@ package com.example.test42.fragments
 
 import android.app.Fragment
 import android.os.Bundle
+import android.provider.Contacts
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -17,12 +18,15 @@ import com.example.test42.data.remote.ArticleService
 import com.example.test42.data.remote.SectionService
 import com.example.test42.ui.adapters.SectionsViewAdapter
 import kotlinx.android.synthetic.main.fragment_news.view.*
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.android.UI
 
 import java.util.ArrayList
 
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
 /**
  * Created by bjarne on 25/11/2017.
@@ -57,6 +61,30 @@ class NewsFragment : Fragment() {
         return view
     }
 
+    @Inject lateinit var sectionService:SectionService
+    @Inject lateinit var articleService:ArticleService
+
+    // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/index.html
+    // https://stackoverflow.com/questions/43132080/kotlin-coroutines-the-right-way-in-android
+    // https://github.com/Kotlin/kotlinx.coroutines/blob/master/ui/coroutines-guide-ui.md
+    private fun loadSections() = launch(UI) {
+        try {
+            val newSections: List<Section> = run(CommonPool) {
+                // dagger injection fails, causing sectionService to stilbe uninitialized at this point...
+                // I think..
+                //sectionService.getSections("nyhedscenter", "6").execute().body()
+                ApiUtils.sectionService.getSections("nyhedscenter", "6").execute().body()
+            }
+            sections.clear()
+            sections.addAll(newSections)
+            view.sectionsRecyclerView.adapter.notifyDataSetChanged()
+
+            loadArticles()
+        } finally {
+            //TODO: handle
+        }
+    }
+/*
     private fun loadSections() {
         // abort current (if any) request
         // is this right?
@@ -91,7 +119,7 @@ class NewsFragment : Fragment() {
         sectionsRequest = request
 
     }
-
+*/
     private fun loadArticles() {
         val service = ApiUtils.articleService
 

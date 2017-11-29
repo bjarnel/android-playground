@@ -18,6 +18,13 @@ android {
     }
 }
 
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+// https://android.jlelse.eu/keddit-part-10-kotlin-dagger-2-dependency-injection-a620052a7384
+// https://blog.mindorks.com/implementing-dagger2-with-kotlin-72af5f066cc4
+// apply plugin must, apparently go before depencies, otherwise... kapt "com.google.dagger:dagger-compiler:2.4" will fail
+apply plugin: 'kotlin-kapt'
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -43,7 +50,19 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // for the high level coroutines functions (async / launch etc.)
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3'
+    // for the Android UI context for for coroutines...
+    // https://github.com/Kotlin/kotlinx.coroutines/blob/master/ui/coroutines-guide-ui.md
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.19.3"
+
+    // https://github.com/google/dagger
+    implementation "com.google.dagger:dagger:2.13"
+    kapt "com.google.dagger:dagger-compiler:2.13"
+
 }
 
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+
+// to use coroutines, which is stil "experimental", we need this setting to stop it from warning us..
+kotlin { experimental { coroutines 'enable' } }
