@@ -4,6 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.test42"
+        // Android 4.0.3 Ice cream sandwich
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
