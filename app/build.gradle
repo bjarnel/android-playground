@@ -18,17 +18,15 @@ android {
     }
 }
 
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-// https://android.jlelse.eu/keddit-part-10-kotlin-dagger-2-dependency-injection-a620052a7384
-// https://blog.mindorks.com/implementing-dagger2-with-kotlin-72af5f066cc4
-// apply plugin must, apparently go before depencies, otherwise... kapt "com.google.dagger:dagger-compiler:2.4" will fail
-apply plugin: 'kotlin-kapt'
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
+
+    // constraint layout
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    // for android.support.design.widget.BottomNavigationView
+    implementation 'com.android.support:design:26.1.0'
 
     // https://code.tutsplus.com/tutorials/getting-started-with-retrofit-2--cms-27792
     // Retrofit2
@@ -56,13 +54,10 @@ dependencies {
     // for the Android UI context for for coroutines...
     // https://github.com/Kotlin/kotlinx.coroutines/blob/master/ui/coroutines-guide-ui.md
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.19.3"
-
-    // https://github.com/google/dagger
-    implementation "com.google.dagger:dagger:2.13"
-    kapt "com.google.dagger:dagger-compiler:2.13"
-
 }
 
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 // to use coroutines, which is stil "experimental", we need this setting to stop it from warning us..
 kotlin { experimental { coroutines 'enable' } }
