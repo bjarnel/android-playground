@@ -12,17 +12,3 @@ data class Section(val title: String,
                    @SerializedName("identifier") val id: String,
                    @SerializedName("hex_color") val hexColor: String,
                    val type:SectionType = SectionType.Regular)
-
-//TODO: use Kotlin enum(?)
-enum class SectionType {
-    @SerializedName("topstory")
-    Topstory,
-    @SerializedName("latest")
-    Latest,
-    @SerializedName("mostread")
-    Mostread,
-    @SerializedName("regional")
-    Regional,
-    @SerializedName("regular")
-    Regular
-}

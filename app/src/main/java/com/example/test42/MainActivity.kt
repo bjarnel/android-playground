@@ -33,7 +33,8 @@ class MainActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener { item -> didTap(item) }
     }
 
-    fun didTap(item: MenuItem): Boolean {
+    private fun didTap(item: MenuItem): Boolean {
+        // https://developer.android.com/training/basics/fragments/fragment-ui.html
         return false
     }
 
