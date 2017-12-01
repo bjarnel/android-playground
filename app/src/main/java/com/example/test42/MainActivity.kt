@@ -24,6 +24,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+// https://discuss.kotlinlang.org/t/support-guard-control-like-swift/2000/2
+// problem is that we cant make it return a value?
+// which means this is basically the same as using if, I guess
+inline fun guard( condition: Boolean, body: () -> Void ) {
+    if( !condition )
+        body()
+}
+
 class MainActivity : AppCompatActivity() {
 
     private var currentActiveTabId = R.id.action_news
@@ -31,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // replace only appears to work if the one we want to replace was programmatically added (as well)
+        fragmentManager.beginTransaction().add(R.id.fragment_container, NewsFragment()).commit()
 
         // https://kotlinlang.org/docs/reference/lambdas.html
         // experimenting with lambdas instead of class with one function in it
@@ -40,12 +51,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun didTap(item: MenuItem): Boolean {
         // basic "guard"
-        //if(currentActiveTabId == item.itemId) { return false }
-        //currentActiveTabId = item.itemId
+        if(currentActiveTabId == item.itemId) { return false }
+        currentActiveTabId = item.itemId
 
-        // https://android.jlelse.eu/a-few-ways-to-implement-a-swift-like-guard-in-kotlin-ffd94027864e
-        // check this out!
-        currentActiveTabId = (currentActiveTabId != item.itemId)?.let { item.itemId } ?: return false
+        // guard inline function - see further up this file..
+        //guard(currentActiveTabId != item.itemId) { return false }
 
         // https://developer.android.com/training/basics/fragments/fragment-ui.html
 

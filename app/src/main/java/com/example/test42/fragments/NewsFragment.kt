@@ -34,6 +34,8 @@ class NewsFragment : Fragment() {
     // lateinit is similar to implicit unwrapped in Swift
     private var sections: MutableList<Section> = ArrayList()
     private var sectionsRequest: Call<List<Section>>? = null
+    //https://stackoverflow.com/questions/33278869/how-do-i-initialize-kotlins-mutablelist-to-empty-mutablelist
+    private val articleRequests = mutableListOf<Call<List<Article>>>()
 
     // the Kotlin converter made savedInstanceState a non-null param, but actually it is nullable
     // interestingly the crash provided a very clear messsage that lead me to replace it with Bundle?
@@ -41,6 +43,7 @@ class NewsFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // https://www.journaldev.com/9266/android-fragment-lifecycle
+        // http://abhiandroid.com/ui/fragment-lifecycle-example-android-studio.html
 
 
         val view = inflater.inflate(R.layout.fragment_news, container, false)
@@ -59,9 +62,29 @@ class NewsFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        abortRequests()
+    }
+
+    private fun abortRequests() {
+        //https://futurestud.io/tutorials/retrofit-2-cancel-requests
+        sectionsRequest?.cancel()
+        sectionsRequest = null
+        for(request in articleRequests) {
+            request.cancel()
+        }
+        articleRequests.clear()
+    }
+
     // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/index.html
     // https://stackoverflow.com/questions/43132080/kotlin-coroutines-the-right-way-in-android
     // https://github.com/Kotlin/kotlinx.coroutines/blob/master/ui/coroutines-guide-ui.md
+    // while this coroutine implementation is AWESOME! it provides no real benefits for our needs
+    // here. Simply put: we need a request/job that we can cancel later. Might as well use the default callback
+    // API from Retrofit2
+    /*
     private fun loadSections() = launch(UI) {
         try {
             val newSections: List<Section> = run(CommonPool) {
@@ -73,20 +96,13 @@ class NewsFragment : Fragment() {
 
             loadArticles()
         } finally {
-            //TODO: handle
         }
     }
-/*
-    private fun loadSections() {
-        // abort current (if any) request
-        // is this right?
-        sectionsRequest?.let {
-            it.cancel()
-            sectionsRequest = null
-        }
+    */
 
-        //TODO: use synchronous Retrofit call with Kotlin coroutines...(!!)
-        //TODO: use Dagger to auto inject sectionService / articleService into this fragment...(!!)
+    private fun loadSections() {
+        abortRequests()
+
         val request = ApiUtils.sectionService
                               .getSections("nyhedscenter", "6")
         request.enqueue(object : Callback<List<Section>> {
@@ -104,14 +120,20 @@ class NewsFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<Section>>, t: Throwable) {
-                //TODO: handle
+                /*
+                https://futurestud.io/tutorials/retrofit-2-cancel-requests
+                If you cancel the request, Retrofit will classify this as a failed request and thus call
+                 the onFailure() callback in your request declaration. This callback is also used when
+                 there is no Internet connection or something went wrong on the network level.
+                */
+                // so if !all.isCancelled then it was a network error..
             }
         })
 
         sectionsRequest = request
 
     }
-*/
+
     private fun loadArticles() {
         val service = ApiUtils.articleService
 
@@ -126,6 +148,7 @@ class NewsFragment : Fragment() {
                 override fun onResponse(call: Call<List<Article>>, response: Response<List<Article>>) {
                     if (response.isSuccessful) {
                         // haha this is basically Swift code..
+                        // this crashes if the fragment has been destroyed(!)
                         (view.sectionsRecyclerView.adapter as? SectionsViewAdapter)?.updateArticleSet(response.body(), section)
 
                     } else {
@@ -134,9 +157,15 @@ class NewsFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<List<Article>>, t: Throwable) {
-                    //TODO: handle
+                    /*
+                https://futurestud.io/tutorials/retrofit-2-cancel-requests
+                If you cancel the request, Retrofit will classify this as a failed request and thus call
+                 the onFailure() callback in your request declaration. This callback is also used when
+                 there is no Internet connection or something went wrong on the network level.
+                */
                 }
             })
+            articleRequests.add(request)
 
         }
     }
