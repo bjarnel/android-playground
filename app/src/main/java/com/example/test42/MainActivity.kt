@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                 })
                 .commit()
 
-        return false
+        return true
     }
 
 }
