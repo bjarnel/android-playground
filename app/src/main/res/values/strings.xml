@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Test42</string>
+    <string name="hintEmail">Enter email</string>
+    <string name="hintPassword">Enter password</string>
+    <string name="hintPasswordAgain">Repeat password</string>
+    <string name="hintInteger">Enter integer</string>
+    <string name="hintDecimal">Enter decimal</string>
 </resources>

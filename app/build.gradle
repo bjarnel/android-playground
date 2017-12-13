@@ -55,6 +55,9 @@ dependencies {
     // for the Android UI context for for coroutines...
     // https://github.com/Kotlin/kotlinx.coroutines/blob/master/ui/coroutines-guide-ui.md
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.19.3"
+
+    // https://github.com/ragunathjawahar/android-saripaar
+    compile 'com.mobsandgeeks:android-saripaar:2.0.3'
 }
 
 apply plugin: 'kotlin-android'

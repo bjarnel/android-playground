@@ -7,4 +7,70 @@
     tools:context="com.example.test42.MainActivity"
     android:background="#0000ff">
 
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/hintEmail"
+        android:inputType="textEmailAddress"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="69dp" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/hintPassword"
+        android:inputType="textPassword"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="137dp" />
+
+    <EditText
+        android:id="@+id/repeatPasswordEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/hintPasswordAgain"
+        android:inputType="textPassword"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="209dp" />
+
+    <EditText
+        android:id="@+id/integerEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/hintInteger"
+        android:inputType="number"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="274dp" />
+
+    <EditText
+        android:id="@+id/decimalEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/hintDecimal"
+        android:inputType="numberDecimal"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="348dp" />
+
+    <CheckBox
+        android:id="@+id/termsCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Agree to terms"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="424dp" />
+
+    <Button
+        android:id="@+id/continueButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        tools:layout_editor_absoluteX="279dp"
+        tools:layout_editor_absoluteY="446dp" />
+
 </android.support.constraint.ConstraintLayout>
